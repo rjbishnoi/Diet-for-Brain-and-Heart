@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Nourish Mind & Heart",
+    "slug": "nourish-mind-heart",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#2D6A4F"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.nourish.mindandheart"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#2D6A4F"
+      },
+      "package": "com.nourish.mindandheart"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
