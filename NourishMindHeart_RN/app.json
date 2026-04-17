@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#2D6A4F"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.nourish.mindandheart",
@@ -31,11 +33,6 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "YOUR_EAS_PROJECT_ID"
-      }
     }
   }
 }
