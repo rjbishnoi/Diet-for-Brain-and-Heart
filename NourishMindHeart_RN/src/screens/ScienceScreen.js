@@ -1,196 +1,97 @@
 import React, { useState } from 'react';
-import {
-  View, Text, ScrollView, TouchableOpacity,
-  StyleSheet, SafeAreaView,
-} from 'react-native';
-import { COLORS, FONTS, RADIUS, SHADOW } from '../theme';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { C } from '../theme';
 import { SCIENCE_FACTS, PILLARS, SUPPLEMENTS } from '../data';
 
-const SUB_TABS = ['Key Findings', 'Pillars', 'Supplements'];
-
 export default function ScienceScreen() {
-  const [activeTab, setActiveTab] = useState('Key Findings');
-
+  const [tab, setTab] = useState('Facts');
   return (
-    <SafeAreaView style={styles.safe}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>The Science</Text>
-        <Text style={styles.headerSub}>Evidence-based nutrition for brain & heart</Text>
-        <View style={styles.subTabs}>
-          {SUB_TABS.map(tab => (
-            <TouchableOpacity
-              key={tab}
-              style={[styles.subTab, activeTab === tab && styles.subTabActive]}
-              onPress={() => setActiveTab(tab)}
-            >
-              <Text style={[styles.subTabText, activeTab === tab && styles.subTabTextActive]}>
-                {tab}
-              </Text>
+    <SafeAreaView style={s.safe}>
+      <View style={s.hdr}>
+        <Text style={s.htitle}>The Science</Text>
+        <Text style={s.hsub}>Evidence-based nutrition for brain and heart</Text>
+        <View style={s.stabs}>
+          {['Facts','Pillars','Supplements'].map(t => (
+            <TouchableOpacity key={t} style={[s.stab, tab===t && s.staba]} onPress={() => setTab(t)}>
+              <Text style={[s.stabt, tab===t && s.stabta]}>{t}</Text>
             </TouchableOpacity>
           ))}
         </View>
       </View>
-
-      <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
-        {activeTab === 'Key Findings' && <FactsTab />}
-        {activeTab === 'Pillars' && <PillarsTab />}
-        {activeTab === 'Supplements' && <SupplementsTab />}
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.cnt}>
+        {tab==='Facts' && SCIENCE_FACTS.map((f,i) => (
+          <View key={i} style={s.fcard}>
+            <Text style={s.fic}>{f.icon}</Text>
+            <View style={{flex:1}}>
+              <Text style={s.ftit}>{f.title}</Text>
+              <Text style={s.fstat}>{f.stat}</Text>
+              <Text style={s.fdesc}>{f.description}</Text>
+              <Text style={s.fsrc}>Source: {f.source}</Text>
+            </View>
+          </View>
+        ))}
+        {tab==='Pillars' && PILLARS.map(p => (
+          <View key={p.number} style={s.pcard}>
+            <View style={[s.pnum,{backgroundColor:p.color}]}><Text style={s.pnumt}>{p.number}</Text></View>
+            <View style={{flex:1}}>
+              <Text style={[s.ptit,{color:p.color}]}>{p.title}</Text>
+              <Text style={s.pdesc}>{p.description}</Text>
+            </View>
+          </View>
+        ))}
+        {tab==='Supplements' && <>
+          <View style={s.warnbox}>
+            <Text style={s.warntit}>Essential for All Vegetarians</Text>
+            <Text style={s.warntxt}>Even with this optimal whole-food diet, three nutrients are consistently insufficient from plant foods alone. These supplements are the evidence-based safety net.</Text>
+          </View>
+          {SUPPLEMENTS.map((sp,i) => (
+            <View key={i} style={s.spcard}>
+              <View style={{flexDirection:'row',justifyContent:'space-between',marginBottom:7}}>
+                <Text style={s.spnm}>{sp.name}</Text>
+                <View style={s.spcost}><Text style={s.spcostt}>{sp.cost}</Text></View>
+              </View>
+              <View style={s.spdose}><Text style={s.spdoset}>{sp.dose}</Text></View>
+              <Text style={s.spwhy}>{sp.why}</Text>
+              <Text style={s.spbr}>{sp.brands}</Text>
+            </View>
+          ))}
+        </>}
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-function FactsTab() {
-  return (
-    <View>
-      <Text style={styles.introText}>
-        Every recommendation in this plan is grounded in peer-reviewed, randomized controlled trials and large
-        cohort studies. These are the landmark findings forming the scientific foundation.
-      </Text>
-      {SCIENCE_FACTS.map((fact, i) => (
-        <View key={i} style={styles.factCard}>
-          <View style={styles.factRow}>
-            <Text style={styles.factIcon}>{fact.icon}</Text>
-            <View style={styles.factBody}>
-              <Text style={styles.factTitle}>{fact.title}</Text>
-              <Text style={styles.factStat}>{fact.stat}</Text>
-              <Text style={styles.factDesc}>{fact.description}</Text>
-              <Text style={styles.factSource}>Source: {fact.source}</Text>
-            </View>
-          </View>
-        </View>
-      ))}
-    </View>
-  );
-}
-
-function PillarsTab() {
-  return (
-    <View>
-      <Text style={styles.introText}>
-        Every meal in this 30-day plan is engineered around 7 scientifically validated nutritional strategies
-        addressing every major mechanism of cardiovascular and neurological aging.
-      </Text>
-      {PILLARS.map((pillar) => (
-        <View key={pillar.number} style={styles.pillarCard}>
-          <View style={[styles.pillarNum, { backgroundColor: pillar.color }]}>
-            <Text style={styles.pillarNumText}>{pillar.number}</Text>
-          </View>
-          <View style={styles.pillarBody}>
-            <Text style={[styles.pillarTitle, { color: pillar.color }]}>{pillar.title}</Text>
-            <Text style={styles.pillarDesc}>{pillar.description}</Text>
-          </View>
-        </View>
-      ))}
-    </View>
-  );
-}
-
-function SupplementsTab() {
-  return (
-    <View>
-      {/* Warning Box */}
-      <View style={styles.warnBox}>
-        <Text style={styles.warnTitle}>⚠️  Essential for All Vegetarians & Vegans</Text>
-        <Text style={styles.warnText}>
-          Even with this optimal whole-food diet, three nutrients are consistently insufficient from plant
-          foods alone. These supplements are the evidence-based safety net that makes vegetarian eating fully
-          safe and optimal for the long term.
-        </Text>
-      </View>
-
-      {SUPPLEMENTS.map((supp, i) => (
-        <View key={i} style={styles.suppCard}>
-          <View style={styles.suppHeader}>
-            <Text style={styles.suppName}>{supp.name}</Text>
-            <View style={styles.suppCostBadge}>
-              <Text style={styles.suppCostText}>{supp.cost}</Text>
-            </View>
-          </View>
-          <View style={styles.doseBadge}>
-            <Text style={styles.doseText}>💊  {supp.dose}</Text>
-          </View>
-          <Text style={styles.suppWhy}>{supp.why}</Text>
-          <Text style={styles.suppBrands}>Recommended brands: {supp.brands}</Text>
-        </View>
-      ))}
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: COLORS.background },
-  scroll: { flex: 1 },
-  content: { padding: 14, paddingBottom: 30 },
-
-  header: {
-    backgroundColor: COLORS.navy,
-    paddingHorizontal: 16,
-    paddingTop: 20,
-    paddingBottom: 16,
-  },
-  headerTitle: { fontSize: 22, ...FONTS.extrabold, color: '#FFF', letterSpacing: -0.5 },
-  headerSub: { fontSize: 12, color: 'rgba(255,255,255,0.8)', marginTop: 3, marginBottom: 14 },
-
-  subTabs: { flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.18)', borderRadius: 9, padding: 3 },
-  subTab: { flex: 1, paddingVertical: 7, borderRadius: 7, alignItems: 'center' },
-  subTabActive: { backgroundColor: '#FFF' },
-  subTabText: { fontSize: 10, ...FONTS.bold, color: 'rgba(255,255,255,0.8)' },
-  subTabTextActive: { color: COLORS.navy },
-
-  introText: { fontSize: 12, color: COLORS.text2, lineHeight: 19, marginBottom: 14 },
-
-  factCard: {
-    backgroundColor: COLORS.white, borderRadius: RADIUS.md,
-    borderWidth: 0.5, borderColor: COLORS.border,
-    padding: 14, marginBottom: 11, ...SHADOW.small,
-  },
-  factRow: { flexDirection: 'row', gap: 12 },
-  factIcon: { fontSize: 34 },
-  factBody: { flex: 1 },
-  factTitle: { fontSize: 13, ...FONTS.extrabold, color: COLORS.navy, marginBottom: 3 },
-  factStat: { fontSize: 34, ...FONTS.black, color: COLORS.emerald, lineHeight: 40, marginBottom: 3 },
-  factDesc: { fontSize: 12, color: COLORS.text2, lineHeight: 18, marginBottom: 4 },
-  factSource: { fontSize: 10, color: COLORS.text3, fontStyle: 'italic' },
-
-  pillarCard: {
-    backgroundColor: COLORS.white, borderRadius: RADIUS.md,
-    borderWidth: 0.5, borderColor: COLORS.border,
-    padding: 14, marginBottom: 10,
-    flexDirection: 'row', gap: 12, alignItems: 'flex-start',
-  },
-  pillarNum: {
-    width: 36, height: 36, borderRadius: 18,
-    justifyContent: 'center', alignItems: 'center', flexShrink: 0,
-  },
-  pillarNumText: { color: '#FFF', ...FONTS.black, fontSize: 16 },
-  pillarBody: { flex: 1 },
-  pillarTitle: { fontSize: 14, ...FONTS.extrabold, marginBottom: 5 },
-  pillarDesc: { fontSize: 12, color: COLORS.text2, lineHeight: 19 },
-
-  warnBox: {
-    backgroundColor: '#FFF3E0', borderRadius: RADIUS.md,
-    padding: 14, marginBottom: 14,
-    borderWidth: 0.5, borderColor: '#f0c060',
-  },
-  warnTitle: { fontSize: 13, ...FONTS.extrabold, color: '#7a4020', marginBottom: 6 },
-  warnText: { fontSize: 12, color: '#7a4020', lineHeight: 19 },
-
-  suppCard: {
-    backgroundColor: COLORS.white, borderRadius: RADIUS.md,
-    borderWidth: 0.5, borderColor: COLORS.border,
-    padding: 14, marginBottom: 11, ...SHADOW.small,
-  },
-  suppHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 7 },
-  suppName: { fontSize: 15, ...FONTS.extrabold, color: COLORS.navy, flex: 1, marginRight: 8 },
-  suppCostBadge: { backgroundColor: COLORS.lightBg, borderRadius: 7, paddingHorizontal: 9, paddingVertical: 4 },
-  suppCostText: { fontSize: 11, ...FONTS.bold, color: COLORS.emerald },
-  doseBadge: {
-    backgroundColor: COLORS.lightBlue, borderRadius: RADIUS.sm,
-    paddingHorizontal: 12, paddingVertical: 8, marginBottom: 8,
-  },
-  doseText: { fontSize: 12, color: '#2c3e70', fontWeight: '600' },
-  suppWhy: { fontSize: 12, color: COLORS.text2, lineHeight: 19, marginBottom: 6 },
-  suppBrands: { fontSize: 11, color: COLORS.text3, lineHeight: 17 },
+const s = StyleSheet.create({
+  safe:{flex:1,backgroundColor:C.bg},
+  hdr:{backgroundColor:C.navy,padding:16,paddingTop:20},
+  htitle:{fontSize:22,fontWeight:'800',color:'#fff'},
+  hsub:{fontSize:12,color:'rgba(255,255,255,0.8)',marginTop:3,marginBottom:14},
+  stabs:{flexDirection:'row',backgroundColor:'rgba(0,0,0,0.18)',borderRadius:9,padding:3},
+  stab:{flex:1,paddingVertical:7,borderRadius:7,alignItems:'center'},
+  staba:{backgroundColor:'#fff'},
+  stabt:{fontSize:11,fontWeight:'700',color:'rgba(255,255,255,0.8)'},
+  stabta:{color:C.navy},
+  cnt:{padding:14,paddingBottom:30},
+  fcard:{backgroundColor:C.white,borderRadius:12,borderWidth:0.5,borderColor:C.border,padding:14,marginBottom:11,flexDirection:'row',gap:12},
+  fic:{fontSize:32},
+  ftit:{fontSize:13,fontWeight:'800',color:C.navy,marginBottom:3},
+  fstat:{fontSize:34,fontWeight:'900',color:C.emerald,lineHeight:40,marginBottom:3},
+  fdesc:{fontSize:12,color:C.text2,lineHeight:18,marginBottom:4},
+  fsrc:{fontSize:10,color:C.text3,fontStyle:'italic'},
+  pcard:{backgroundColor:C.white,borderRadius:12,borderWidth:0.5,borderColor:C.border,padding:14,marginBottom:10,flexDirection:'row',gap:12},
+  pnum:{width:36,height:36,borderRadius:18,justifyContent:'center',alignItems:'center'},
+  pnumt:{color:'#fff',fontWeight:'900',fontSize:16},
+  ptit:{fontSize:14,fontWeight:'800',marginBottom:5},
+  pdesc:{fontSize:12,color:C.text2,lineHeight:19},
+  warnbox:{backgroundColor:'#FFF3E0',borderRadius:12,padding:14,marginBottom:14,borderWidth:0.5,borderColor:'#f0c060'},
+  warntit:{fontSize:13,fontWeight:'800',color:'#7a4020',marginBottom:6},
+  warntxt:{fontSize:12,color:'#7a4020',lineHeight:19},
+  spcard:{backgroundColor:C.white,borderRadius:12,borderWidth:0.5,borderColor:C.border,padding:14,marginBottom:11},
+  spnm:{fontSize:15,fontWeight:'800',color:C.navy,flex:1,marginRight:8},
+  spcost:{backgroundColor:C.lightBg,borderRadius:7,paddingHorizontal:9,paddingVertical:4},
+  spcostt:{fontSize:11,fontWeight:'700',color:C.emerald},
+  spdose:{backgroundColor:C.lightBlue,borderRadius:8,paddingHorizontal:12,paddingVertical:8,marginBottom:8},
+  spdoset:{fontSize:12,color:'#2c3e70',fontWeight:'600'},
+  spwhy:{fontSize:12,color:C.text2,lineHeight:19,marginBottom:6},
+  spbr:{fontSize:11,color:C.text3,lineHeight:17},
 });

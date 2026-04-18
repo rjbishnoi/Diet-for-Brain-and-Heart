@@ -1,73 +1,42 @@
 import React, { useState } from 'react';
-import {
-  View, Text, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView,
-} from 'react-native';
-import { COLORS, FONTS, RADIUS, SHADOW } from '../theme';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { C } from '../theme';
 import { BREAKFASTS, LUNCHES, DINNERS, WEEK_PLAN, DAY_NAMES, DAY_SHORT } from '../data';
-import MealCard from '../components/MealCard';
 
 export default function PlanScreen({ navigation }) {
-  const [selectedWeek, setSelectedWeek] = useState(0);
-  const weekPlan = WEEK_PLAN[selectedWeek];
-
-  const openMeal = (meal) => navigation.navigate('RecipeDetail', { meal });
-
+  const [week, setWeek] = useState(0);
+  const open = m => navigation.navigate('RecipeDetail', { meal: m });
   return (
-    <SafeAreaView style={styles.safe}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>30-Day Meal Calendar</Text>
-        <Text style={styles.headerSub}>Tap any meal to see its full recipe & science</Text>
-
-        {/* Week Selector */}
-        <View style={styles.weekTabs}>
-          {[0, 1, 2, 3].map((i) => (
-            <TouchableOpacity
-              key={i}
-              style={[styles.weekTab, selectedWeek === i && styles.weekTabActive]}
-              onPress={() => setSelectedWeek(i)}
-            >
-              <Text style={[styles.weekTabText, selectedWeek === i && styles.weekTabTextActive]}>
-                Week {i + 1}
-              </Text>
+    <SafeAreaView style={s.safe}>
+      <View style={s.hdr}>
+        <Text style={s.htitle}>30-Day Meal Calendar</Text>
+        <Text style={s.hsub}>Tap any meal to see its full recipe</Text>
+        <View style={s.wtabs}>
+          {[0,1,2,3].map(i => (
+            <TouchableOpacity key={i} style={[s.wtab, week===i && s.wtaba]} onPress={() => setWeek(i)}>
+              <Text style={[s.wtabt, week===i && s.wtabta]}>Week {i+1}</Text>
             </TouchableOpacity>
           ))}
         </View>
       </View>
-
-      <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
-        {weekPlan.map((day, dayIndex) => {
-          const breakfast = BREAKFASTS[day.b];
-          const lunch = LUNCHES[day.l];
-          const dinner = DINNERS[day.d];
-
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.cnt}>
+        {WEEK_PLAN[week].map((day, di) => {
+          const b = BREAKFASTS[day.b], l = LUNCHES[day.l], d = DINNERS[day.d];
           return (
-            <View key={dayIndex} style={styles.dayRow}>
-              {/* Day Label */}
-              <View style={styles.dayLabel}>
-                <View style={styles.dayChip}>
-                  <Text style={styles.dayChipText}>{DAY_SHORT[dayIndex]}</Text>
-                </View>
-                <Text style={styles.dayName}>{DAY_NAMES[dayIndex]}</Text>
+            <View key={di} style={s.drow}>
+              <View style={s.dlbl}>
+                <View style={s.dchip}><Text style={s.dchipT}>{DAY_SHORT[di]}</Text></View>
+                <Text style={s.dname}>{DAY_NAMES[di]}</Text>
               </View>
-
-              {/* Meal Cells */}
-              <View style={styles.mealGrid}>
-                <MealCard
-                  meal={breakfast}
-                  compact
-                  onPress={() => openMeal(breakfast)}
-                />
-                <MealCard
-                  meal={lunch}
-                  compact
-                  onPress={() => openMeal(lunch)}
-                />
-                <MealCard
-                  meal={dinner}
-                  compact
-                  onPress={() => openMeal(dinner)}
-                />
+              <View style={s.mgrid}>
+                {[['B',b],['L',l],['D',d]].map(([t,meal]) => (
+                  <TouchableOpacity key={t} style={[s.mcell,{backgroundColor:meal.color}]} onPress={() => open(meal)} activeOpacity={0.75}>
+                    <Text style={s.memi}>{meal.emoji}</Text>
+                    <Text style={s.mtype}>{t==='B'?'BREAKFAST':t==='L'?'LUNCH':'DINNER'}</Text>
+                    <Text style={s.mname} numberOfLines={3}>{meal.name}</Text>
+                    <Text style={s.mcost}>{meal.cost}</Text>
+                  </TouchableOpacity>
+                ))}
               </View>
             </View>
           );
@@ -77,37 +46,26 @@ export default function PlanScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: COLORS.background },
-  scroll: { flex: 1 },
-  content: { padding: 14, paddingBottom: 30 },
-
-  header: {
-    backgroundColor: COLORS.navy,
-    paddingHorizontal: 16,
-    paddingTop: 20,
-    paddingBottom: 16,
-  },
-  headerTitle: { fontSize: 22, ...FONTS.extrabold, color: '#FFF', letterSpacing: -0.5 },
-  headerSub: { fontSize: 12, color: 'rgba(255,255,255,0.75)', marginTop: 3, marginBottom: 14 },
-
-  weekTabs: { flexDirection: 'row', gap: 6 },
-  weekTab: {
-    flex: 1, paddingVertical: 7, borderRadius: 7,
-    backgroundColor: 'rgba(255,255,255,0.15)', alignItems: 'center',
-  },
-  weekTabActive: { backgroundColor: '#FFF' },
-  weekTabText: { fontSize: 11, ...FONTS.bold, color: 'rgba(255,255,255,0.8)' },
-  weekTabTextActive: { color: COLORS.navy },
-
-  dayRow: { marginBottom: 18 },
-  dayLabel: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 8 },
-  dayChip: {
-    width: 38, height: 38, borderRadius: 19,
-    backgroundColor: COLORS.lightBg, justifyContent: 'center', alignItems: 'center',
-  },
-  dayChipText: { fontSize: 10, ...FONTS.extrabold, color: COLORS.emerald },
-  dayName: { fontSize: 15, ...FONTS.bold, color: COLORS.navy },
-
-  mealGrid: { flexDirection: 'row', gap: 6 },
+const s = StyleSheet.create({
+  safe:{flex:1,backgroundColor:C.bg},
+  hdr:{backgroundColor:C.navy,padding:16,paddingTop:20},
+  htitle:{fontSize:22,fontWeight:'800',color:'#fff'},
+  hsub:{fontSize:12,color:'rgba(255,255,255,0.75)',marginTop:3,marginBottom:14},
+  wtabs:{flexDirection:'row',gap:6},
+  wtab:{flex:1,paddingVertical:7,borderRadius:7,backgroundColor:'rgba(255,255,255,0.15)',alignItems:'center'},
+  wtaba:{backgroundColor:'#fff'},
+  wtabt:{fontSize:11,fontWeight:'700',color:'rgba(255,255,255,0.8)'},
+  wtabta:{color:C.navy},
+  cnt:{padding:14,paddingBottom:30},
+  drow:{marginBottom:16},
+  dlbl:{flexDirection:'row',alignItems:'center',gap:10,marginBottom:8},
+  dchip:{width:38,height:38,borderRadius:19,backgroundColor:C.lightBg,justifyContent:'center',alignItems:'center'},
+  dchipT:{fontSize:10,fontWeight:'800',color:C.emerald},
+  dname:{fontSize:15,fontWeight:'700',color:C.navy},
+  mgrid:{flexDirection:'row',gap:6},
+  mcell:{flex:1,borderRadius:12,padding:9,borderWidth:0.5,borderColor:C.border},
+  memi:{fontSize:22,marginBottom:4},
+  mtype:{fontSize:9,color:C.teal,fontWeight:'700',marginBottom:2},
+  mname:{fontSize:10,fontWeight:'700',color:C.text,lineHeight:14,marginBottom:3},
+  mcost:{fontSize:9,color:C.text3},
 });

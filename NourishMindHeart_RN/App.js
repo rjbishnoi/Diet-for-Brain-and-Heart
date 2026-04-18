@@ -1,9 +1,8 @@
 import React from 'react';
-import { Platform } from 'react-native';
+import { Platform, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Text } from 'react-native';
 
 import HomeScreen from './src/screens/HomeScreen';
 import PlanScreen from './src/screens/PlanScreen';
@@ -12,55 +11,35 @@ import ShopScreen from './src/screens/ShopScreen';
 import ScienceScreen from './src/screens/ScienceScreen';
 import RecipeDetailScreen from './src/screens/RecipeDetailScreen';
 
-const EMERALD = '#2D6A4F';
-
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+const SO = { headerShown: false };
 
-const stackOpts = { headerShown: false };
+const Stacks = {
+  Home: [['HomeMain', HomeScreen], ['RecipeDetail', RecipeDetailScreen]],
+  Plan: [['PlanMain', PlanScreen], ['RecipeDetail', RecipeDetailScreen]],
+  Recipes: [['RecipesMain', RecipesScreen], ['RecipeDetail', RecipeDetailScreen]],
+  Shop: [['ShopMain', ShopScreen]],
+  Science: [['ScienceMain', ScienceScreen]],
+};
 
-function HomeStack() {
-  return (
-    <Stack.Navigator screenOptions={stackOpts}>
-      <Stack.Screen name="HomeMain" component={HomeScreen} />
-      <Stack.Screen name="RecipeDetail" component={RecipeDetailScreen} />
+function makeStack(screens) {
+  return () => (
+    <Stack.Navigator screenOptions={SO}>
+      {screens.map(([name, Comp]) => (
+        <Stack.Screen key={name} name={name} component={Comp} />
+      ))}
     </Stack.Navigator>
   );
 }
 
-function PlanStack() {
-  return (
-    <Stack.Navigator screenOptions={stackOpts}>
-      <Stack.Screen name="PlanMain" component={PlanScreen} />
-      <Stack.Screen name="RecipeDetail" component={RecipeDetailScreen} />
-    </Stack.Navigator>
-  );
-}
-
-function RecipesStack() {
-  return (
-    <Stack.Navigator screenOptions={stackOpts}>
-      <Stack.Screen name="RecipesMain" component={RecipesScreen} />
-      <Stack.Screen name="RecipeDetail" component={RecipeDetailScreen} />
-    </Stack.Navigator>
-  );
-}
-
-function ShopStack() {
-  return (
-    <Stack.Navigator screenOptions={stackOpts}>
-      <Stack.Screen name="ShopMain" component={ShopScreen} />
-    </Stack.Navigator>
-  );
-}
-
-function ScienceStack() {
-  return (
-    <Stack.Navigator screenOptions={stackOpts}>
-      <Stack.Screen name="ScienceMain" component={ScienceScreen} />
-    </Stack.Navigator>
-  );
-}
+const TABS = [
+  { name: 'Today',   emoji: '❤️',  Stack: makeStack(Stacks.Home) },
+  { name: 'Plan',    emoji: '📅',  Stack: makeStack(Stacks.Plan) },
+  { name: 'Recipes', emoji: '📖',  Stack: makeStack(Stacks.Recipes) },
+  { name: 'Shop',    emoji: '🛒',  Stack: makeStack(Stacks.Shop) },
+  { name: 'Science', emoji: '🔬',  Stack: makeStack(Stacks.Science) },
+];
 
 export default function App() {
   return (
@@ -68,7 +47,7 @@ export default function App() {
       <Tab.Navigator
         screenOptions={{
           headerShown: false,
-          tabBarActiveTintColor: EMERALD,
+          tabBarActiveTintColor: '#2D6A4F',
           tabBarInactiveTintColor: '#999',
           tabBarStyle: {
             height: Platform.OS === 'ios' ? 82 : 60,
@@ -78,37 +57,17 @@ export default function App() {
             borderTopWidth: 0.5,
             backgroundColor: '#fff',
           },
-          tabBarLabelStyle: {
-            fontSize: 10,
-            fontWeight: '600',
-          },
+          tabBarLabelStyle: { fontSize: 10, fontWeight: '600' },
         }}
       >
-        <Tab.Screen
-          name="Today"
-          component={HomeStack}
-          options={{ tabBarIcon: () => <Text style={{ fontSize: 20 }}>❤️</Text> }}
-        />
-        <Tab.Screen
-          name="Plan"
-          component={PlanStack}
-          options={{ tabBarIcon: () => <Text style={{ fontSize: 20 }}>📅</Text> }}
-        />
-        <Tab.Screen
-          name="Recipes"
-          component={RecipesStack}
-          options={{ tabBarIcon: () => <Text style={{ fontSize: 20 }}>📖</Text> }}
-        />
-        <Tab.Screen
-          name="Shop"
-          component={ShopStack}
-          options={{ tabBarIcon: () => <Text style={{ fontSize: 20 }}>🛒</Text> }}
-        />
-        <Tab.Screen
-          name="Science"
-          component={ScienceStack}
-          options={{ tabBarIcon: () => <Text style={{ fontSize: 20 }}>🔬</Text> }}
-        />
+        {TABS.map(({ name, emoji, Stack }) => (
+          <Tab.Screen
+            key={name}
+            name={name}
+            component={Stack}
+            options={{ tabBarIcon: () => <Text style={{ fontSize: 20 }}>{emoji}</Text> }}
+          />
+        ))}
       </Tab.Navigator>
     </NavigationContainer>
   );

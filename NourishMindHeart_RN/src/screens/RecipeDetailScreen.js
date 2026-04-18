@@ -1,274 +1,122 @@
 import React, { useState } from 'react';
-import {
-  View, Text, ScrollView, TouchableOpacity,
-  StyleSheet, SafeAreaView,
-} from 'react-native';
-import { COLORS, FONTS, RADIUS, SHADOW } from '../theme';
-import TagBadge from '../components/TagBadge';
-
-const DIFF_COLORS = { Easy: COLORS.teal, Medium: '#C4920F', Hard: '#A63A1A' };
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { C, tagColor } from '../theme';
 
 export default function RecipeDetailScreen({ route, navigation }) {
-  const { meal } = route.params;
-  const [activeTab, setActiveTab] = useState('recipe');
+  const { meal: m } = route.params;
+  const [tab, setTab] = useState('recipe');
+  const DC = { Easy: C.teal, Medium: C.gold, Hard: C.rust };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={s.safe}>
       <ScrollView showsVerticalScrollIndicator={false} stickyHeaderIndices={[0]}>
-        {/* Sticky Header */}
-        <View style={styles.stickyHdr}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-            <Text style={styles.backText}>‹ Back</Text>
-          </TouchableOpacity>
-          <Text style={styles.stickyType}>{meal.type}</Text>
+        <View style={s.stickyHdr}>
+          <TouchableOpacity onPress={() => navigation.goBack()}><Text style={s.back}>Back</Text></TouchableOpacity>
+          <Text style={s.stype}>{m.type}</Text>
         </View>
-
-        {/* Hero */}
-        <View style={styles.hero}>
-          <Text style={styles.heroEmoji}>{meal.emoji}</Text>
-          <Text style={styles.heroName}>{meal.name}</Text>
-          <View style={styles.heroMeta}>
-            <Text style={styles.metaTxt}>⏱ {meal.time}</Text>
-            <Text style={styles.metaTxt}>  👥 {meal.servings} servings</Text>
-            <Text style={[styles.metaDiff, { color: DIFF_COLORS[meal.difficulty] || COLORS.text3 }]}>
-              {'  '}● {meal.difficulty}
-            </Text>
-          </View>
-          <View style={styles.tagsWrap}>
-            {meal.tags.map(tag => <TagBadge key={tag} tag={tag} />)}
-          </View>
-
-          {/* Metric Row */}
-          <View style={styles.metricRow}>
-            {[
-              ['Cal', meal.calories],
-              ['Protein', meal.protein],
-              ['Fiber', meal.fiber],
-              ['Cost', meal.cost],
-            ].map(([label, val]) => (
-              <View key={label} style={styles.metricCard}>
-                <Text style={styles.metricVal}>{val}</Text>
-                <Text style={styles.metricLbl}>{label}</Text>
-              </View>
+        <View style={s.hero}>
+          <Text style={s.emi}>{m.emoji}</Text>
+          <Text style={s.name}>{m.name}</Text>
+          <Text style={s.meta}>⏱ {m.time}   👥 {m.servings} servings   <Text style={{color:DC[m.difficulty]||C.text3,fontWeight:'700'}}>● {m.difficulty}</Text></Text>
+          <View style={s.tags}>{m.tags.map(t => <View key={t} style={[s.tag,{backgroundColor:tagColor(t)}]}><Text style={s.tagt}>{t}</Text></View>)}</View>
+          <View style={s.mrow}>
+            {[['Cal',m.calories],['Protein',m.protein],['Fiber',m.fiber],['Cost',m.cost]].map(([k,v]) => (
+              <View key={k} style={s.mc}><Text style={s.mv}>{v}</Text><Text style={s.mk}>{k}</Text></View>
             ))}
           </View>
-
-          {/* Sub Tabs */}
-          <View style={styles.tabs}>
-            {['recipe', 'science', 'shop'].map(tab => (
-              <TouchableOpacity
-                key={tab}
-                style={[styles.tab, activeTab === tab && styles.tabActive]}
-                onPress={() => setActiveTab(tab)}
-              >
-                <Text style={[styles.tabText, activeTab === tab && styles.tabTextActive]}>
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                </Text>
+          <View style={s.tabs}>
+            {['recipe','science','shop'].map(t => (
+              <TouchableOpacity key={t} style={[s.tab, tab===t && s.taba]} onPress={() => setTab(t)}>
+                <Text style={[s.tabt, tab===t && s.tabta]}>{t.charAt(0).toUpperCase()+t.slice(1)}</Text>
               </TouchableOpacity>
             ))}
           </View>
         </View>
-
-        {/* Tab Content */}
-        <View style={styles.tabContent}>
-          {activeTab === 'recipe' && <RecipeTab meal={meal} />}
-          {activeTab === 'science' && <ScienceTab meal={meal} />}
-          {activeTab === 'shop' && <ShopTab meal={meal} />}
+        <View style={s.content}>
+          {tab==='recipe' && <>
+            <Text style={s.sec}>Ingredients</Text>
+            {m.ingredients.map((ing,i) => <View key={i} style={s.irow}><View style={s.idot}/><Text style={s.itxt}>{ing}</Text></View>)}
+            <Text style={s.sec}>Method</Text>
+            {m.steps.map((st,i) => <View key={i} style={s.srow}><View style={s.snum}><Text style={s.snumt}>{i+1}</Text></View><Text style={s.stxt}>{st}</Text></View>)}
+            <Text style={s.sec}>Health Benefits</Text>
+            {m.benefits.map((b,i) => <View key={i} style={s.brow}><Text style={s.bck}>✓</Text><Text style={s.btxt}>{b}</Text></View>)}
+          </>}
+          {tab==='science' && <>
+            <View style={s.scibox}><Text style={s.scilbl}>PEER-REVIEWED RESEARCH</Text><Text style={s.scitxt}>{m.science}</Text></View>
+            <Text style={s.sec}>Bioactive Compounds</Text>
+            <View style={s.tags}>{m.tags.map(t => <View key={t} style={[s.tag,{backgroundColor:tagColor(t),paddingHorizontal:12,paddingVertical:5}]}><Text style={[s.tagt,{fontSize:12}]}>{t}</Text></View>)}</View>
+            <View style={s.nbox}>
+              <Text style={s.nboxt}>NUTRITIONAL PROFILE</Text>
+              <View style={s.ngrid}>
+                {[['Calories',m.calories+' kcal'],['Protein',m.protein],['Fiber',m.fiber],['Cost',m.cost],['Difficulty',m.difficulty],['Servings',''+m.servings]].map(([k,v]) => (
+                  <View key={k} style={s.nc}><Text style={s.nv}>{v}</Text><Text style={s.nk}>{k}</Text></View>
+                ))}
+              </View>
+            </View>
+          </>}
+          {tab==='shop' && <>
+            <View style={s.shopbox}><Text style={s.shoplbl}>WHERE TO BUY</Text><Text style={s.shoptxt}>{m.shopping}</Text></View>
+            <View style={s.tipbox}>
+              <Text style={s.tiplbl}>PRO TIPS</Text>
+              {['Indian grocery: spices 70-80% cheaper than supermarket brands','Costco: best price on nuts, oils, and frozen berries','Frozen produce is often more nutritious than fresh','Compare price per ounce, not shelf price'].map((tip,i) => (
+                <View key={i} style={{flexDirection:'row',gap:8,marginBottom:8}}>
+                  <Text style={{color:C.emerald,fontSize:16}}>•</Text>
+                  <Text style={{fontSize:12,color:C.text2,flex:1,lineHeight:19}}>{tip}</Text>
+                </View>
+              ))}
+            </View>
+          </>}
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-function RecipeTab({ meal }) {
-  return (
-    <View>
-      <Text style={styles.sectionTitle}>Ingredients</Text>
-      {meal.ingredients.map((ing, i) => (
-        <View key={i} style={styles.ingRow}>
-          <View style={styles.ingDot} />
-          <Text style={styles.ingText}>{ing}</Text>
-        </View>
-      ))}
-
-      <Text style={styles.sectionTitle}>Method</Text>
-      {meal.steps.map((step, i) => (
-        <View key={i} style={styles.stepRow}>
-          <View style={styles.stepNum}>
-            <Text style={styles.stepNumText}>{i + 1}</Text>
-          </View>
-          <Text style={styles.stepText}>{step}</Text>
-        </View>
-      ))}
-
-      <Text style={styles.sectionTitle}>Health Benefits</Text>
-      {meal.benefits.map((b, i) => (
-        <View key={i} style={styles.benefitRow}>
-          <Text style={styles.checkmark}>✓</Text>
-          <Text style={styles.benefitText}>{b}</Text>
-        </View>
-      ))}
-    </View>
-  );
-}
-
-function ScienceTab({ meal }) {
-  return (
-    <View>
-      <View style={styles.sciBox}>
-        <Text style={styles.sciLabel}>🔬  PEER-REVIEWED RESEARCH</Text>
-        <Text style={styles.sciText}>{meal.science}</Text>
-      </View>
-
-      <Text style={styles.sectionTitle}>Bioactive Compounds</Text>
-      <View style={styles.tagsWrapLarge}>
-        {meal.tags.map(tag => <TagBadge key={tag} tag={tag} large />)}
-      </View>
-
-      <View style={styles.nutrProfileBox}>
-        <Text style={styles.nutrProfileTitle}>📊  NUTRITIONAL PROFILE</Text>
-        <View style={styles.nutrGrid}>
-          {[
-            ['Calories', `${meal.calories} kcal`],
-            ['Protein', meal.protein],
-            ['Fiber', meal.fiber],
-            ['Cost/serving', meal.cost],
-            ['Difficulty', meal.difficulty],
-            ['Servings', `${meal.servings}`],
-          ].map(([k, v]) => (
-            <View key={k} style={styles.nutrCell}>
-              <Text style={styles.nutrVal}>{v}</Text>
-              <Text style={styles.nutrKey}>{k}</Text>
-            </View>
-          ))}
-        </View>
-      </View>
-    </View>
-  );
-}
-
-function ShopTab({ meal }) {
-  return (
-    <View>
-      <View style={styles.shopBox}>
-        <Text style={styles.shopLabel}>🛒  WHERE TO BUY & ESTIMATED COSTS</Text>
-        <Text style={styles.shopText}>{meal.shopping}</Text>
-      </View>
-
-      <View style={styles.tipsBox}>
-        <Text style={styles.tipsTitle}>💡  PRO SHOPPING TIPS</Text>
-        {[
-          'Indian grocery stores sell spices 70–80% cheaper than McCormick',
-          'Costco gives the best price on nuts, oils, frozen berries, and canned goods',
-          'Frozen fruits & vegetables are often MORE nutritious than "fresh"',
-          'Compare $/oz unit prices — never compare shelf prices',
-        ].map((tip, i) => (
-          <View key={i} style={styles.tipRow}>
-            <Text style={styles.tipBullet}>•</Text>
-            <Text style={styles.tipText}>{tip}</Text>
-          </View>
-        ))}
-      </View>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#FFF' },
-
-  stickyHdr: {
-    flexDirection: 'row', alignItems: 'center', gap: 10,
-    paddingHorizontal: 16, paddingVertical: 12,
-    backgroundColor: 'rgba(255,255,255,0.97)',
-    borderBottomWidth: 0.5, borderBottomColor: COLORS.border,
-  },
-  backBtn: { paddingRight: 8 },
-  backText: { fontSize: 16, ...FONTS.bold, color: COLORS.emerald },
-  stickyType: { fontSize: 13, color: COLORS.text3, ...FONTS.medium },
-
-  hero: { padding: 18, paddingTop: 16, alignItems: 'center' },
-  heroEmoji: { fontSize: 64, marginBottom: 12 },
-  heroName: {
-    fontSize: 20, ...FONTS.extrabold, color: COLORS.text,
-    textAlign: 'center', lineHeight: 28, marginBottom: 10, paddingHorizontal: 10,
-  },
-  heroMeta: { flexDirection: 'row', alignItems: 'center', marginBottom: 10, flexWrap: 'wrap', justifyContent: 'center' },
-  metaTxt: { fontSize: 12, color: COLORS.text3 },
-  metaDiff: { fontSize: 12, fontWeight: '700' },
-  tagsWrap: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', marginBottom: 14 },
-  tagsWrapLarge: { flexDirection: 'row', flexWrap: 'wrap', marginBottom: 14 },
-
-  metricRow: { flexDirection: 'row', gap: 8, marginBottom: 14, width: '100%' },
-  metricCard: {
-    flex: 1, backgroundColor: COLORS.lightBg,
-    borderRadius: RADIUS.sm, paddingVertical: 10, alignItems: 'center',
-  },
-  metricVal: { fontSize: 15, ...FONTS.extrabold, color: COLORS.emerald },
-  metricLbl: { fontSize: 10, color: COLORS.text3, marginTop: 2 },
-
-  tabs: { flexDirection: 'row', borderBottomWidth: 0.5, borderBottomColor: COLORS.border, width: '100%' },
-  tab: { flex: 1, paddingVertical: 11, alignItems: 'center', borderBottomWidth: 2, borderBottomColor: 'transparent' },
-  tabActive: { borderBottomColor: COLORS.emerald },
-  tabText: { fontSize: 13, ...FONTS.semibold, color: '#AAA' },
-  tabTextActive: { color: COLORS.emerald },
-
-  tabContent: { paddingHorizontal: 16, paddingTop: 6, paddingBottom: 40 },
-
-  sectionTitle: { fontSize: 15, ...FONTS.extrabold, color: COLORS.navy, marginTop: 18, marginBottom: 10 },
-
-  ingRow: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 8, borderBottomWidth: 0.5, borderBottomColor: '#F5F5F5' },
-  ingDot: { width: 7, height: 7, borderRadius: 3.5, backgroundColor: COLORS.sage, flexShrink: 0 },
-  ingText: { fontSize: 13, color: COLORS.text, flex: 1 },
-
-  stepRow: { flexDirection: 'row', gap: 12, alignItems: 'flex-start', marginBottom: 12 },
-  stepNum: {
-    width: 28, height: 28, borderRadius: 14,
-    backgroundColor: COLORS.emerald, justifyContent: 'center', alignItems: 'center', flexShrink: 0,
-  },
-  stepNumText: { color: '#FFF', ...FONTS.extrabold, fontSize: 12 },
-  stepText: { fontSize: 13, color: COLORS.text2, lineHeight: 20, flex: 1, paddingTop: 4 },
-
-  benefitRow: {
-    flexDirection: 'row', alignItems: 'flex-start', gap: 10,
-    backgroundColor: COLORS.lightBg, borderRadius: RADIUS.sm,
-    padding: 10, marginBottom: 7,
-  },
-  checkmark: { fontSize: 15, color: COLORS.emerald, fontWeight: '700' },
-  benefitText: { fontSize: 12, ...FONTS.semibold, color: COLORS.text, flex: 1, lineHeight: 18 },
-
-  sciBox: {
-    backgroundColor: COLORS.lightBlue, borderRadius: RADIUS.md,
-    padding: 14, borderLeftWidth: 3, borderLeftColor: COLORS.navy, marginTop: 10,
-  },
-  sciLabel: { fontSize: 10, ...FONTS.extrabold, color: COLORS.navy, marginBottom: 6, letterSpacing: 0.5 },
-  sciText: { fontSize: 12, color: '#2c3e70', lineHeight: 20 },
-
-  nutrProfileBox: {
-    backgroundColor: COLORS.white, borderRadius: RADIUS.md,
-    borderWidth: 0.5, borderColor: COLORS.border, padding: 14, marginTop: 14,
-  },
-  nutrProfileTitle: { fontSize: 10, ...FONTS.extrabold, color: COLORS.navy, marginBottom: 10, letterSpacing: 0.5 },
-  nutrGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  nutrCell: {
-    width: '30%', backgroundColor: COLORS.lightBg,
-    borderRadius: RADIUS.sm, padding: 10, alignItems: 'center',
-  },
-  nutrVal: { fontSize: 14, ...FONTS.extrabold, color: COLORS.emerald },
-  nutrKey: { fontSize: 10, color: COLORS.text3, marginTop: 2, textAlign: 'center' },
-
-  shopBox: {
-    backgroundColor: COLORS.lightGold, borderRadius: RADIUS.md,
-    padding: 14, marginTop: 10,
-  },
-  shopLabel: { fontSize: 10, ...FONTS.extrabold, color: '#8B6914', marginBottom: 7, letterSpacing: 0.5 },
-  shopText: { fontSize: 12, color: '#5a4010', lineHeight: 20 },
-
-  tipsBox: {
-    backgroundColor: COLORS.white, borderRadius: RADIUS.md,
-    borderWidth: 0.5, borderColor: COLORS.border, padding: 14, marginTop: 12,
-  },
-  tipsTitle: { fontSize: 10, ...FONTS.extrabold, color: COLORS.navy, marginBottom: 10, letterSpacing: 0.5 },
-  tipRow: { flexDirection: 'row', gap: 8, marginBottom: 8, alignItems: 'flex-start' },
-  tipBullet: { fontSize: 16, color: COLORS.emerald, lineHeight: 20 },
-  tipText: { fontSize: 12, color: COLORS.text2, flex: 1, lineHeight: 19 },
+const s = StyleSheet.create({
+  safe:{flex:1,backgroundColor:'#fff'},
+  stickyHdr:{flexDirection:'row',alignItems:'center',gap:10,padding:12,backgroundColor:'rgba(255,255,255,0.97)',borderBottomWidth:0.5,borderBottomColor:C.border},
+  back:{fontSize:16,fontWeight:'700',color:C.emerald},
+  stype:{fontSize:13,color:C.text3},
+  hero:{padding:16,alignItems:'center'},
+  emi:{fontSize:60,marginBottom:12},
+  name:{fontSize:19,fontWeight:'800',color:C.text,textAlign:'center',lineHeight:26,marginBottom:10},
+  meta:{fontSize:12,color:C.text3,marginBottom:10,textAlign:'center'},
+  tags:{flexDirection:'row',flexWrap:'wrap',justifyContent:'center',marginBottom:14,gap:4},
+  tag:{borderRadius:20,paddingHorizontal:9,paddingVertical:3},
+  tagt:{fontSize:10,fontWeight:'600',color:'#333'},
+  mrow:{flexDirection:'row',gap:8,marginBottom:14,width:'100%'},
+  mc:{flex:1,backgroundColor:C.lightBg,borderRadius:10,paddingVertical:10,alignItems:'center'},
+  mv:{fontSize:14,fontWeight:'800',color:C.emerald},
+  mk:{fontSize:10,color:C.text3,marginTop:2},
+  tabs:{flexDirection:'row',borderBottomWidth:0.5,borderBottomColor:C.border,width:'100%'},
+  tab:{flex:1,paddingVertical:11,alignItems:'center',borderBottomWidth:2,borderBottomColor:'transparent'},
+  taba:{borderBottomColor:C.emerald},
+  tabt:{fontSize:13,fontWeight:'600',color:'#aaa'},
+  tabta:{color:C.emerald},
+  content:{paddingHorizontal:16,paddingTop:6,paddingBottom:40},
+  sec:{fontSize:15,fontWeight:'800',color:C.navy,marginTop:18,marginBottom:10},
+  irow:{flexDirection:'row',alignItems:'center',gap:10,paddingVertical:8,borderBottomWidth:0.5,borderBottomColor:'#f5f5f5'},
+  idot:{width:7,height:7,borderRadius:3.5,backgroundColor:C.sage},
+  itxt:{fontSize:13,color:C.text,flex:1},
+  srow:{flexDirection:'row',gap:12,marginBottom:12},
+  snum:{width:28,height:28,borderRadius:14,backgroundColor:C.emerald,justifyContent:'center',alignItems:'center'},
+  snumt:{color:'#fff',fontWeight:'800',fontSize:12},
+  stxt:{fontSize:13,color:C.text2,lineHeight:20,flex:1,paddingTop:4},
+  brow:{flexDirection:'row',alignItems:'flex-start',gap:10,backgroundColor:C.lightBg,borderRadius:9,padding:10,marginBottom:7},
+  bck:{fontSize:15,color:C.emerald,fontWeight:'700'},
+  btxt:{fontSize:12,fontWeight:'600',color:C.text,flex:1,lineHeight:18},
+  scibox:{backgroundColor:C.lightBlue,borderRadius:12,padding:14,borderLeftWidth:3,borderLeftColor:C.navy,marginTop:10},
+  scilbl:{fontSize:10,fontWeight:'800',color:C.navy,marginBottom:6,letterSpacing:0.5},
+  scitxt:{fontSize:12,color:'#2c3e70',lineHeight:20},
+  nbox:{backgroundColor:C.white,borderRadius:12,borderWidth:0.5,borderColor:C.border,padding:14,marginTop:14},
+  nboxt:{fontSize:10,fontWeight:'800',color:C.navy,marginBottom:10,letterSpacing:0.5},
+  ngrid:{flexDirection:'row',flexWrap:'wrap',gap:8},
+  nc:{width:'30%',backgroundColor:C.lightBg,borderRadius:8,padding:9,alignItems:'center'},
+  nv:{fontSize:13,fontWeight:'800',color:C.emerald},
+  nk:{fontSize:10,color:C.text3,marginTop:2,textAlign:'center'},
+  shopbox:{backgroundColor:C.lightGold,borderRadius:12,padding:14,marginTop:10},
+  shoplbl:{fontSize:10,fontWeight:'800',color:'#8B6914',marginBottom:7,letterSpacing:0.5},
+  shoptxt:{fontSize:12,color:'#5a4010',lineHeight:20},
+  tipbox:{backgroundColor:C.white,borderRadius:12,borderWidth:0.5,borderColor:C.border,padding:14,marginTop:12},
+  tiplbl:{fontSize:10,fontWeight:'800',color:C.navy,marginBottom:10,letterSpacing:0.5},
 });
