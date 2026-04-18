@@ -11,17 +11,10 @@
       "resizeMode": "contain",
       "backgroundColor": "#2D6A4F"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.nourish.mindandheart",
-      "buildNumber": "1",
-      "infoPlist": {
-        "NSCameraUsageDescription": "This app does not use the camera.",
-        "NSPhotoLibraryUsageDescription": "This app does not access your photo library."
-      }
+      "buildNumber": "1"
     },
     "android": {
       "adaptiveIcon": {
@@ -32,7 +25,9 @@
       "versionCode": 1
     },
     "web": {
+      "bundler": "metro",
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "newArchEnabled": false
   }
 }
