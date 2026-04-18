@@ -1,5 +1,7 @@
 {
-  "cli": { "version": ">= 10.0.0" },
+  "cli": {
+    "version": ">= 10.0.0"
+  },
   "build": {
     "development": {
       "developmentClient": true,
@@ -13,6 +15,12 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "appleId": "bishnoiramj@gmail.com",
+        "appleTeamId": "B62C77LG78",
+        "ascAppId": "REPLACE_WITH_NUMERIC_ID"
+      }
+    }
   }
 }
