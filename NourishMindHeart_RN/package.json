@@ -5,7 +5,10 @@
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
-    "ios": "expo start --ios"
+    "ios": "expo start --ios",
+    "deploy": "eas build --platform ios --profile production --auto-submit --non-interactive",
+    "deploy:android": "eas build --platform android --profile production --auto-submit --non-interactive",
+    "deploy:all": "eas build --platform all --profile production --auto-submit --non-interactive"
   },
   "dependencies": {
     "expo": "^51.0.28",
