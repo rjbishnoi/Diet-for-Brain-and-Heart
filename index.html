@@ -778,6 +778,240 @@ footer {
   .btn-white, .btn-outline-white { width: 100%; justify-content: center; }
 }
 </style>
+
+/* ═══════════════════════════════════════════════
+   AUTH MODAL
+═══════════════════════════════════════════════ */
+.auth-overlay {
+  position: fixed; inset: 0; z-index: 3000;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.auth-overlay.open { opacity: 1; pointer-events: all; }
+.auth-box {
+  background: var(--white);
+  border-radius: 24px;
+  width: 100%; max-width: 420px;
+  padding: 40px;
+  transform: translateY(20px) scale(0.97);
+  transition: transform 0.3s ease;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.2);
+}
+.auth-overlay.open .auth-box { transform: translateY(0) scale(1); }
+.auth-logo { text-align: center; margin-bottom: 6px; font-size: 40px; }
+.auth-title { font-family: var(--font-display); font-size: 26px; font-weight: 900; color: var(--navy); text-align: center; margin-bottom: 4px; }
+.auth-sub { font-size: 14px; color: var(--text3); text-align: center; margin-bottom: 28px; }
+.auth-tabs { display: flex; background: var(--cream); border-radius: 12px; padding: 4px; margin-bottom: 24px; }
+.auth-tab { flex: 1; padding: 9px 0; border-radius: 9px; font-size: 14px; font-weight: 600; color: var(--text3); transition: var(--transition); }
+.auth-tab.active { background: var(--white); color: var(--navy); box-shadow: 0 1px 6px rgba(0,0,0,0.1); }
+.auth-field { margin-bottom: 14px; }
+.auth-label { font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 6px; display: block; }
+.auth-input {
+  width: 100%; padding: 13px 16px;
+  border: 1.5px solid var(--border); border-radius: 12px;
+  font-family: var(--font-body); font-size: 15px; color: var(--text);
+  background: var(--white); outline: none;
+  transition: var(--transition);
+}
+.auth-input:focus { border-color: var(--em); box-shadow: 0 0 0 3px rgba(45,106,79,0.12); }
+.auth-btn {
+  width: 100%; padding: 14px;
+  background: var(--em); color: #fff;
+  border-radius: 12px; font-size: 15px; font-weight: 700;
+  transition: var(--transition); margin-top: 6px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.auth-btn:hover { background: var(--em-dark); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(45,106,79,0.35); }
+.auth-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.auth-err { background: #FEE2E2; color: #B91C1C; font-size: 13px; padding: 10px 14px; border-radius: 10px; margin-bottom: 14px; display: none; }
+.auth-err.show { display: block; }
+.auth-divider { text-align: center; font-size: 12px; color: var(--text3); margin: 16px 0; position: relative; }
+.auth-divider::before, .auth-divider::after { content:''; position:absolute; top:50%; width:40%; height:1px; background:var(--border); }
+.auth-divider::before { left:0; } .auth-divider::after { right:0; }
+
+/* ═══════════════════════════════════════════════
+   USER NAV STATE
+═══════════════════════════════════════════════ */
+.user-menu { position: relative; }
+.user-avatar {
+  width: 36px; height: 36px; border-radius: 18px;
+  background: var(--em); color: #fff;
+  font-size: 14px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: var(--transition);
+}
+.user-avatar:hover { transform: scale(1.08); }
+.user-dropdown {
+  position: absolute; top: calc(100% + 10px); right: 0;
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 14px; box-shadow: var(--shadow-lg);
+  min-width: 200px; padding: 8px 0;
+  opacity: 0; pointer-events: none; transform: translateY(-8px);
+  transition: all 0.2s ease; z-index: 200;
+}
+.user-dropdown.open { opacity: 1; pointer-events: all; transform: translateY(0); }
+.user-dd-header { padding: 12px 16px 10px; border-bottom: 1px solid var(--border); }
+.user-dd-name { font-size: 14px; font-weight: 700; color: var(--navy); }
+.user-dd-email { font-size: 12px; color: var(--text3); margin-top: 2px; }
+.user-dd-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; font-size: 14px; color: var(--text2); width: 100%; transition: background 0.15s; }
+.user-dd-item:hover { background: var(--cream); color: var(--text); }
+.user-dd-item.danger { color: var(--rust); }
+
+/* ═══════════════════════════════════════════════
+   RECIPE SELECTOR & MY LIST
+═══════════════════════════════════════════════ */
+.mylist-section { background: var(--cream2); }
+.mylist-gate {
+  text-align: center; padding: 60px 20px;
+  background: var(--white); border: 1.5px dashed var(--border);
+  border-radius: 20px;
+}
+.mylist-gate-icon { font-size: 52px; margin-bottom: 16px; }
+.mylist-gate-title { font-family: var(--font-display); font-size: 26px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+.mylist-gate-sub { font-size: 15px; color: var(--text3); margin-bottom: 24px; }
+.recipe-selector-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 32px; }
+.recipe-select-card {
+  background: var(--white); border: 2px solid var(--border);
+  border-radius: 16px; padding: 20px 16px; cursor: pointer;
+  transition: var(--transition); position: relative;
+  text-align: center;
+}
+.recipe-select-card:hover { border-color: var(--sage); transform: translateY(-2px); box-shadow: var(--shadow); }
+.recipe-select-card.selected { border-color: var(--em); background: rgba(45,106,79,0.04); }
+.recipe-select-check {
+  position: absolute; top: 10px; right: 10px;
+  width: 24px; height: 24px; border-radius: 12px;
+  border: 2px solid var(--border); background: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; transition: var(--transition);
+}
+.recipe-select-card.selected .recipe-select-check { background: var(--em); border-color: var(--em); color: #fff; }
+.recipe-select-emoji { font-size: 36px; margin-bottom: 8px; }
+.recipe-select-type { font-size: 10px; font-weight: 700; color: var(--em-light); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 4px; }
+.recipe-select-name { font-size: 13px; font-weight: 700; color: var(--navy); line-height: 1.35; margin-bottom: 6px; }
+.recipe-select-cost { font-size: 12px; color: var(--text3); }
+.selection-actions {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px; margin-bottom: 24px;
+}
+.selection-count { font-size: 14px; color: var(--text2); font-weight: 600; }
+.btn-gen-list {
+  background: var(--em); color: #fff;
+  padding: 12px 24px; border-radius: var(--r-pill);
+  font-size: 14px; font-weight: 700;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: var(--transition);
+  box-shadow: 0 4px 14px rgba(45,106,79,0.3);
+}
+.btn-gen-list:hover { background: var(--em-dark); transform: translateY(-1px); }
+.btn-gen-list:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-clear-sel {
+  padding: 12px 20px; border-radius: var(--r-pill);
+  font-size: 14px; font-weight: 600; color: var(--text3);
+  border: 1.5px solid var(--border); background: var(--white);
+  transition: var(--transition);
+}
+.btn-clear-sel:hover { border-color: var(--rust); color: var(--rust); }
+
+/* ═══════════════════════════════════════════════
+   SHOPPING LIST OUTPUT
+═══════════════════════════════════════════════ */
+.shop-list-panel {
+  background: var(--white); border-radius: 20px;
+  border: 1px solid var(--border); overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.shop-list-header {
+  background: linear-gradient(135deg, var(--em), var(--em-light));
+  padding: 24px 28px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.shop-list-title { font-family: var(--font-display); font-size: 22px; font-weight: 900; color: #fff; }
+.shop-list-sub { font-size: 13px; color: rgba(255,255,255,0.8); margin-top: 3px; }
+.shop-list-actions { display: flex; gap: 10px; }
+.btn-print {
+  padding: 9px 18px; border-radius: var(--r-pill);
+  background: rgba(255,255,255,0.2); color: #fff;
+  font-size: 13px; font-weight: 600; border: 1px solid rgba(255,255,255,0.3);
+  transition: var(--transition);
+}
+.btn-print:hover { background: rgba(255,255,255,0.3); }
+.shop-list-body { padding: 28px; }
+.shop-list-selected { margin-bottom: 24px; }
+.shop-list-sel-title { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 10px; letter-spacing: 0.3px; }
+.shop-list-sel-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+.shop-list-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--cream); border: 1px solid var(--border);
+  border-radius: var(--r-pill); padding: 5px 12px;
+  font-size: 12px; font-weight: 600; color: var(--navy);
+}
+.shop-list-chip-emi { font-size: 14px; }
+.shop-cat { margin-bottom: 24px; }
+.shop-cat-title {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 15px; font-weight: 800; color: var(--navy);
+  margin-bottom: 12px; padding-bottom: 8px;
+  border-bottom: 2px solid var(--cream2);
+}
+.shop-cat-icon { font-size: 20px; }
+.shop-cat-count { font-size: 11px; font-weight: 600; color: var(--text3); background: var(--cream); padding: 2px 9px; border-radius: var(--r-pill); margin-left: auto; }
+.shop-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid #F5F5F5;
+  transition: background 0.15s; cursor: pointer;
+}
+.shop-item:last-child { border-bottom: none; }
+.shop-item:hover { background: rgba(45,106,79,0.03); margin: 0 -8px; padding: 10px 8px; border-radius: 8px; }
+.shop-item-check {
+  width: 22px; height: 22px; border-radius: 11px;
+  border: 2px solid var(--border); background: var(--white);
+  flex-shrink: 0; display: flex; align-items: center;
+  justify-content: center; transition: var(--transition);
+}
+.shop-item.checked .shop-item-check { background: var(--em); border-color: var(--em); }
+.shop-item.checked .shop-item-check::after { content: '✓'; color: #fff; font-size: 12px; font-weight: 700; }
+.shop-item-name { font-size: 14px; color: var(--text); flex: 1; transition: color 0.2s; }
+.shop-item.checked .shop-item-name { color: var(--text3); text-decoration: line-through; }
+.shop-item-qty { font-size: 12px; color: var(--em); font-weight: 600; }
+.shop-list-totals {
+  background: var(--cream); border-radius: 14px;
+  padding: 20px 22px; margin-top: 8px;
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 14px;
+}
+.shop-total-cell { text-align: center; }
+.shop-total-val { font-family: var(--font-display); font-size: 22px; font-weight: 900; color: var(--em); }
+.shop-total-lbl { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.shop-list-empty { text-align: center; padding: 40px; color: var(--text3); font-size: 15px; }
+
+/* ═══════════════════════════════════════════════
+   PRINT STYLES
+═══════════════════════════════════════════════ */
+@media print {
+  nav, .hero, .stats-band, .science-section, .pillars-section,
+  .recipes-section, .plan-section, .shop-section, .supps-section,
+  .cta-section, footer, .auth-overlay, .modal-overlay,
+  .selection-actions, .recipe-selector-grid, .shop-list-actions,
+  .btn-print, .mylist-gate { display: none !important; }
+  .mylist-section { padding: 0 !important; background: white !important; }
+  .shop-list-panel { box-shadow: none !important; border: 1px solid #eee !important; }
+  .shop-list-header { background: #2D6A4F !important; -webkit-print-color-adjust: exact; }
+}
+
+@media (max-width: 768px) {
+  .recipe-selector-grid { grid-template-columns: repeat(2,1fr); }
+  .shop-list-totals { grid-template-columns: repeat(2,1fr); }
+  .shop-list-header { flex-direction: column; gap: 12px; align-items: flex-start; }
+}
+@media (max-width: 480px) {
+  .recipe-selector-grid { grid-template-columns: 1fr; }
+  .auth-box { padding: 28px 20px; }
+}
+</style>
 </head>
 <body>
 
@@ -795,7 +1029,10 @@ footer {
     <a href="#plan">Meal Plan</a>
     <a href="#shop">Shopping</a>
     <a href="#supplements">Supplements</a>
-    <a href="#download" class="nav-cta">Get the App →</a>
+    <a href="#mylist" class="nav-cta" id="navMyList" style="display:none">🛒 My List</a>
+    <a href="#download" class="nav-cta" id="navGetApp">Get the App →</a>
+    <div class="user-menu" id="userMenu" style="display:none"><div class="user-avatar" id="userAvatar" onclick="toggleDropdown()"></div><div class="user-dropdown" id="userDropdown"><div class="user-dd-header"><div class="user-dd-name" id="ddName"></div><div class="user-dd-email" id="ddEmail"></div></div><button class="user-dd-item" onclick="scrollToList()">🛒 My Shopping List</button><button class="user-dd-item danger" onclick="signOut()">↩ Sign Out</button></div></div>
+    <button class="nav-cta" id="navSignIn" onclick="openAuth()">Sign In</button>
   </div>
   <button class="nav-mobile-btn" onclick="toggleMenu()" aria-label="Menu">
     <span></span><span></span><span></span>
@@ -1036,6 +1273,48 @@ footer {
     <h2 class="section-title reveal">The vegetarian<br><em>safety net</em></h2>
     <p class="section-desc reveal">Even with this optimal whole-food diet, four nutrients are consistently insufficient from plant foods alone. These are the evidence-based supplements that complete the picture.</p>
     <div class="supps-grid" id="suppsGrid"></div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════
+     MY LIST SECTION
+═══════════════════════════════════════════════ -->
+<section class="section mylist-section" id="mylist">
+  <div class="section-inner">
+    <div class="section-eyebrow">My Shopping List</div>
+    <h2 class="section-title">Select <em>recipes</em>,<br>get your list</h2>
+    <p class="section-desc">Choose any combination of recipes and we'll generate a consolidated shopping list — ingredients combined, duplicates merged, organized by category.</p>
+    <div id="mylistContent">
+      <!-- Shown when signed out -->
+      <div class="mylist-gate" id="mylistGate">
+        <div class="mylist-gate-icon">🛒</div>
+        <div class="mylist-gate-title">Sign in to build your list</div>
+        <div class="mylist-gate-sub">Create a free account to select recipes, generate shopping lists, and save your selections across sessions.</div>
+        <button class="btn-primary" onclick="openAuth()" style="display:inline-flex;margin:0 auto">Sign In or Create Account →</button>
+      </div>
+      <!-- Shown when signed in -->
+      <div id="mylistLoggedIn" style="display:none">
+        <div class="selection-actions">
+          <div class="selection-count" id="selectionCount">0 recipes selected</div>
+          <div style="display:flex;gap:10px">
+            <button class="btn-clear-sel" onclick="clearSelection()">Clear All</button>
+            <button class="btn-gen-list" id="btnGenList" onclick="generateShoppingList()" disabled>
+              🛒 Generate Shopping List
+            </button>
+          </div>
+        </div>
+        <!-- Filter pills for selector -->
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
+          <button class="filter-pill active" id="selFilt-All" onclick="setSelectorFilter('All')">All</button>
+          <button class="filter-pill" id="selFilt-Breakfast" onclick="setSelectorFilter('Breakfast')">Breakfast</button>
+          <button class="filter-pill" id="selFilt-Lunch" onclick="setSelectorFilter('Lunch')">Lunch</button>
+          <button class="filter-pill" id="selFilt-Dinner" onclick="setSelectorFilter('Dinner')">Dinner</button>
+        </div>
+        <div class="recipe-selector-grid" id="recipeSelectorGrid"></div>
+        <div id="shoppingListOutput"></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1500,5 +1779,445 @@ document.addEventListener('DOMContentLoaded', ()=>{
   setTimeout(observeReveal, 100);
 });
 </script>
+
+<!-- ═══ AUTH MODAL ═══ -->
+<div class="auth-overlay" id="authOverlay" onclick="authOverlayClick(event)">
+  <div class="auth-box">
+    <div class="auth-logo">🥗</div>
+    <div class="auth-title">Nourish Mind & Heart</div>
+    <div class="auth-sub">Sign in to build your personal shopping list</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Create Account</button>
+    </div>
+    <div class="auth-err" id="authErr"></div>
+    <div id="authSignIn">
+      <div class="auth-field"><label class="auth-label">Email Address</label><input class="auth-input" type="email" id="siEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="auth-field"><label class="auth-label">Password</label><input class="auth-input" type="password" id="siPass" placeholder="Enter your password" autocomplete="current-password"></div>
+      <button class="auth-btn" id="btnSignIn" onclick="doSignIn()">Sign In →</button>
+    </div>
+    <div id="authSignUp" style="display:none">
+      <div class="auth-field"><label class="auth-label">Your Name</label><input class="auth-input" type="text" id="suName" placeholder="First name" autocomplete="given-name"></div>
+      <div class="auth-field"><label class="auth-label">Email Address</label><input class="auth-input" type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="auth-field"><label class="auth-label">Password (min 6 characters)</label><input class="auth-input" type="password" id="suPass" placeholder="Create a password" autocomplete="new-password"></div>
+      <button class="auth-btn" id="btnSignUp" onclick="doSignUp()">Create Account →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════
+   SIMPLE LOCAL AUTH + SHOPPING LIST
+   Uses localStorage — works perfectly on GitHub Pages
+════════════════════════════════════════════════════ */
+
+// ── AUTH STATE ──────────────────────────────────────
+let currentUser = null;
+const USERS_KEY = 'nmh_users';
+const SESSION_KEY = 'nmh_session';
+const SELECTIONS_KEY = 'nmh_selections_';
+
+function getUsers() {
+  try { return JSON.parse(localStorage.getItem(USERS_KEY) || '{}'); } catch(e) { return {}; }
+}
+function saveUsers(users) { localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
+function hashPassword(pass) {
+  // Simple hash for localStorage — not for production financial apps
+  let hash = 0;
+  for (let i = 0; i < pass.length; i++) {
+    hash = ((hash << 5) - hash) + pass.charCodeAt(i); hash |= 0;
+  }
+  return 'h' + Math.abs(hash).toString(36) + pass.length;
+}
+
+function doSignUp() {
+  const name  = document.getElementById('suName').value.trim();
+  const email = document.getElementById('suEmail').value.trim().toLowerCase();
+  const pass  = document.getElementById('suPass').value;
+  const btn   = document.getElementById('btnSignUp');
+
+  if (!name)               return showAuthErr('Please enter your name');
+  if (!email.includes('@')) return showAuthErr('Please enter a valid email address');
+  if (pass.length < 6)    return showAuthErr('Password must be at least 6 characters');
+
+  const users = getUsers();
+  if (users[email]) return showAuthErr('An account with this email already exists. Sign in instead.');
+
+  users[email] = { name, email, hash: hashPassword(pass), created: Date.now() };
+  saveUsers(users);
+
+  signInUser({ name, email });
+}
+
+function doSignIn() {
+  const email = document.getElementById('siEmail').value.trim().toLowerCase();
+  const pass  = document.getElementById('siPass').value;
+
+  if (!email || !pass) return showAuthErr('Please enter your email and password');
+
+  const users = getUsers();
+  const user  = users[email];
+
+  if (!user)                              return showAuthErr('No account found with this email. Create one above.');
+  if (user.hash !== hashPassword(pass))  return showAuthErr('Incorrect password. Please try again.');
+
+  signInUser(user);
+}
+
+function signInUser(user) {
+  currentUser = user;
+  localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+  closeAuth();
+  updateNavForUser();
+  showMyList();
+  loadSavedSelections();
+}
+
+function signOut() {
+  currentUser = null;
+  localStorage.removeItem(SESSION_KEY);
+  updateNavForGuest();
+  document.getElementById('userDropdown').classList.remove('open');
+  selectedRecipes.clear();
+  document.getElementById('mylistGate').style.display = '';
+  document.getElementById('mylistLoggedIn').style.display = 'none';
+}
+
+function restoreSession() {
+  try {
+    const saved = localStorage.getItem(SESSION_KEY);
+    if (saved) {
+      currentUser = JSON.parse(saved);
+      updateNavForUser();
+      showMyList();
+      loadSavedSelections();
+    }
+  } catch(e) {}
+}
+
+// ── NAV ─────────────────────────────────────────────
+function updateNavForUser() {
+  if (!currentUser) return;
+  document.getElementById('navSignIn').style.display = 'none';
+  document.getElementById('navGetApp').style.display = 'none';
+  document.getElementById('navMyList').style.display = '';
+  document.getElementById('userMenu').style.display = '';
+  const initials = currentUser.name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('userAvatar').textContent = initials;
+  document.getElementById('ddName').textContent = currentUser.name;
+  document.getElementById('ddEmail').textContent = currentUser.email;
+}
+function updateNavForGuest() {
+  document.getElementById('navSignIn').style.display = '';
+  document.getElementById('navGetApp').style.display = '';
+  document.getElementById('navMyList').style.display = 'none';
+  document.getElementById('userMenu').style.display = 'none';
+}
+function toggleDropdown() {
+  document.getElementById('userDropdown').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  const um = document.getElementById('userMenu');
+  if (um && !um.contains(e.target)) document.getElementById('userDropdown').classList.remove('open');
+});
+function scrollToList() {
+  document.getElementById('mylist').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('userDropdown').classList.remove('open');
+}
+
+// ── AUTH MODAL ───────────────────────────────────────
+let authTab = 'signin';
+function openAuth() {
+  document.getElementById('authOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  clearAuthErr();
+}
+function closeAuth() {
+  document.getElementById('authOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function authOverlayClick(e) { if (e.target === document.getElementById('authOverlay')) closeAuth(); }
+function switchAuthTab(tab) {
+  authTab = tab;
+  document.getElementById('authSignIn').style.display = tab==='signin' ? '' : 'none';
+  document.getElementById('authSignUp').style.display = tab==='signup' ? '' : 'none';
+  document.getElementById('tabSignIn').classList.toggle('active', tab==='signin');
+  document.getElementById('tabSignUp').classList.toggle('active', tab==='signup');
+  clearAuthErr();
+}
+function showAuthErr(msg) {
+  const el = document.getElementById('authErr');
+  el.textContent = msg; el.classList.add('show');
+}
+function clearAuthErr() {
+  const el = document.getElementById('authErr');
+  if (el) { el.textContent = ''; el.classList.remove('show'); }
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    if (document.getElementById('authOverlay').classList.contains('open')) {
+      authTab === 'signin' ? doSignIn() : doSignUp();
+    }
+  }
+});
+
+// ── MY LIST ──────────────────────────────────────────
+let selectedRecipes = new Set();
+let selectorFilter = 'All';
+let checkedItems = new Set();
+
+function showMyList() {
+  document.getElementById('mylistGate').style.display = 'none';
+  document.getElementById('mylistLoggedIn').style.display = '';
+  renderSelector();
+}
+
+function loadSavedSelections() {
+  if (!currentUser) return;
+  const key = SELECTIONS_KEY + currentUser.email;
+  try {
+    const saved = JSON.parse(localStorage.getItem(key) || '[]');
+    selectedRecipes = new Set(saved);
+    renderSelector();
+    updateSelectionCount();
+    if (selectedRecipes.size > 0) generateShoppingList();
+  } catch(e) {}
+}
+
+function saveSelections() {
+  if (!currentUser) return;
+  const key = SELECTIONS_KEY + currentUser.email;
+  localStorage.setItem(key, JSON.stringify([...selectedRecipes]));
+}
+
+function setSelectorFilter(f) {
+  selectorFilter = f;
+  ['All','Breakfast','Lunch','Dinner'].forEach(x => {
+    const el = document.getElementById('selFilt-' + x);
+    if (el) el.classList.toggle('active', x === f);
+  });
+  renderSelector();
+}
+
+function renderSelector() {
+  const filtered = typeof MEALS !== 'undefined'
+    ? MEALS.filter(m => selectorFilter === 'All' || m.type === selectorFilter)
+    : [];
+  document.getElementById('recipeSelectorGrid').innerHTML = filtered.map(m => {
+    const sel = selectedRecipes.has(m.id);
+    return `<div class="recipe-select-card${sel?' selected':''}" onclick="toggleRecipe('${m.id}')">
+      <div class="recipe-select-check">${sel ? '✓' : ''}</div>
+      <div class="recipe-select-emoji">${m.e}</div>
+      <div class="recipe-select-type">${m.type}</div>
+      <div class="recipe-select-name">${m.name}</div>
+      <div class="recipe-select-cost">${m.cost}/serving · ${m.cal} cal</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleRecipe(id) {
+  if (selectedRecipes.has(id)) selectedRecipes.delete(id);
+  else selectedRecipes.add(id);
+  saveSelections();
+  renderSelector();
+  updateSelectionCount();
+  // Auto-regenerate if list is already showing
+  if (document.getElementById('shoppingListOutput').innerHTML.trim()) {
+    generateShoppingList();
+  }
+}
+
+function updateSelectionCount() {
+  const n = selectedRecipes.size;
+  document.getElementById('selectionCount').textContent = `${n} recipe${n !== 1 ? 's' : ''} selected`;
+  const btn = document.getElementById('btnGenList');
+  if (btn) btn.disabled = n === 0;
+}
+
+function clearSelection() {
+  selectedRecipes.clear();
+  checkedItems.clear();
+  saveSelections();
+  renderSelector();
+  updateSelectionCount();
+  document.getElementById('shoppingListOutput').innerHTML = '';
+}
+
+// ── INGREDIENT PARSER & AGGREGATOR ───────────────────
+const CATEGORIES = {
+  'Produce & Vegetables': ['spinach','kale','arugula','bell pepper','cucumber','tomato','tomatoes','onion','garlic','ginger','beet','beets','eggplant','zucchini','broccoli','snap peas','carrot','avocado','avocados','sweet potato','sweet potatoes','banana','mango','kiwi','blueberries','blueberry','strawberries','berries','lemon','lime','pomegranate','portobello'],
+  'Grains & Legumes': ['oats','rice','quinoa','lentils','split peas','chickpeas','black beans','beans','arborio','panko','breadcrumbs','flour','bread','sourdough','wrap','wraps','noodles','pasta'],
+  'Protein & Dairy': ['tofu','tempeh','egg','eggs','yogurt','feta','mozzarella','parmesan','parmigiano','goat cheese','cheese','ghee'],
+  'Pantry & Sauces': ['olive oil','evoo','coconut oil','sesame oil','soy sauce','miso','tahini','marinara','coconut milk','curry paste','tikka masala','balsamic','vinegar','capers','olives','sun-dried','wakame','seaweed','bamboo shoots','broth','stock'],
+  'Nuts, Seeds & Dried Fruit': ['walnut','walnuts','almond','almonds','pine nuts','hemp seeds','chia seeds','flaxseed','pumpkin seeds','granola','coconut flakes','acai','cacao nibs'],
+  'Spices & Herbs': ['turmeric','cumin','coriander','cinnamon','ginger powder','paprika','garam masala','oregano','thyme','basil','cilantro','parsley','pepper','salt','chili powder','bay leaf','cardamom','vanilla'],
+  'Liquids & Sweeteners': ['almond milk','oat milk','maple syrup','honey','wine','vinegar','water'],
+};
+
+function categorizeIngredient(ing) {
+  const lower = ing.toLowerCase();
+  for (const [cat, keywords] of Object.entries(CATEGORIES)) {
+    if (keywords.some(kw => lower.includes(kw))) return cat;
+  }
+  return 'Other';
+}
+
+const CAT_ICONS = {
+  'Produce & Vegetables': '🥬',
+  'Grains & Legumes': '🌾',
+  'Protein & Dairy': '🥚',
+  'Pantry & Sauces': '🫙',
+  'Nuts, Seeds & Dried Fruit': '🥜',
+  'Spices & Herbs': '🌿',
+  'Liquids & Sweeteners': '🍯',
+  'Other': '📦',
+};
+
+function parseIngredient(rawIng) {
+  // Extract the item name by removing leading amounts/units
+  const cleaned = rawIng
+    .replace(/^[\d\/\s½¼¾⅓⅔]+/, '')
+    .replace(/^(cup|tbsp|tsp|oz|lb|g|kg|ml|l|can|clove|cloves|large|medium|small|bunch|handful|pinch|drizzle|dash|slice|slices|head|heads|sprig|sprigs|stalk|stalks|piece|pieces)\w*\s+/i, '')
+    .replace(/\(.*?\)/g, '')
+    .replace(/\s*[-–—].*$/, '')
+    .trim();
+  return cleaned;
+}
+
+function generateShoppingList() {
+  if (selectedRecipes.size === 0) return;
+
+  const selected = [...selectedRecipes].map(id => typeof MEALS !== 'undefined' ? MEALS.find(m => m.id === id) : null).filter(Boolean);
+  if (selected.length === 0) return;
+
+  // Aggregate all ingredients
+  const ingredientMap = {};
+  selected.forEach(meal => {
+    (meal.ingredients || []).forEach(rawIng => {
+      const name = parseIngredient(rawIng);
+      const cat  = categorizeIngredient(name);
+      const key  = name.toLowerCase().replace(/s$/, ''); // simple stemming
+      if (!ingredientMap[key]) {
+        ingredientMap[key] = { name, raw: [rawIng], cat, count: 1 };
+      } else {
+        ingredientMap[key].raw.push(rawIng);
+        ingredientMap[key].count++;
+      }
+    });
+  });
+
+  // Group by category
+  const byCategory = {};
+  Object.values(ingredientMap).forEach(item => {
+    if (!byCategory[item.cat]) byCategory[item.cat] = [];
+    byCategory[item.cat].push(item);
+  });
+
+  // Calculate totals
+  const totalCal  = selected.reduce((a, m) => a + m.cal, 0);
+  const totalCost = selected.reduce((a, m) => a + parseFloat(m.cost.replace('$', '')), 0);
+  const totalIngr = Object.keys(ingredientMap).length;
+  const totalServ = selected.reduce((a, m) => a + m.s, 0);
+
+  // Render
+  const selectedChips = selected.map(m =>
+    `<span class="shop-list-chip"><span class="shop-list-chip-emi">${m.e}</span>${m.name.split(' ').slice(0,4).join(' ')}</span>`
+  ).join('');
+
+  const catOrder = ['Produce & Vegetables','Grains & Legumes','Protein & Dairy','Pantry & Sauces','Nuts, Seeds & Dried Fruit','Spices & Herbs','Liquids & Sweeteners','Other'];
+  const catsHtml = catOrder.filter(cat => byCategory[cat] && byCategory[cat].length > 0).map(cat => {
+    const items = byCategory[cat];
+    const itemsHtml = items.map(item => {
+      const itemId = 'si_' + item.name.replace(/\W+/g, '_');
+      const isChecked = checkedItems.has(itemId);
+      const qty = item.count > 1 ? `× ${item.count} recipes` : '';
+      return `<div class="shop-item${isChecked?' checked':''}" onclick="toggleItem('${itemId}', this)">
+        <div class="shop-item-check"></div>
+        <div class="shop-item-name">${item.name}</div>
+        ${qty ? `<div class="shop-item-qty">${qty}</div>` : ''}
+      </div>`;
+    }).join('');
+    return `<div class="shop-cat">
+      <div class="shop-cat-title">
+        <span class="shop-cat-icon">${CAT_ICONS[cat]||'📦'}</span>
+        ${cat}
+        <span class="shop-cat-count">${items.length} items</span>
+      </div>
+      ${itemsHtml}
+    </div>`;
+  }).join('');
+
+  document.getElementById('shoppingListOutput').innerHTML = `
+    <div class="shop-list-panel" id="shopListPanel">
+      <div class="shop-list-header">
+        <div>
+          <div class="shop-list-title">🛒 Your Shopping List</div>
+          <div class="shop-list-sub">${selected.length} recipes · ${totalIngr} unique ingredients</div>
+        </div>
+        <div class="shop-list-actions">
+          <button class="btn-print" onclick="window.print()">🖨 Print List</button>
+          <button class="btn-print" onclick="copyShoppingList()">📋 Copy List</button>
+        </div>
+      </div>
+      <div class="shop-list-body">
+        <div class="shop-list-selected">
+          <div class="shop-list-sel-title">Recipes included in this list:</div>
+          <div class="shop-list-sel-chips">${selectedChips}</div>
+        </div>
+        ${catsHtml}
+        <div class="shop-list-totals">
+          <div class="shop-total-cell"><div class="shop-total-val">${selected.length}</div><div class="shop-total-lbl">Recipes</div></div>
+          <div class="shop-total-cell"><div class="shop-total-val">${totalIngr}</div><div class="shop-total-lbl">Unique Items</div></div>
+          <div class="shop-total-cell"><div class="shop-total-val">~${totalCal}</div><div class="shop-total-lbl">Total Calories</div></div>
+          <div class="shop-total-cell"><div class="shop-total-val">$${totalCost.toFixed(2)}</div><div class="shop-total-lbl">Est. Cost</div></div>
+        </div>
+      </div>
+    </div>`;
+
+  // Restore checked state
+  checkedItems.forEach(id => {
+    const el = document.getElementById(id);
+    // handled via class
+  });
+
+  // Smooth scroll to list
+  setTimeout(() => {
+    document.getElementById('shopListPanel')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 200);
+}
+
+function toggleItem(id, el) {
+  el.classList.toggle('checked');
+  if (el.classList.contains('checked')) checkedItems.add(id);
+  else checkedItems.delete(id);
+}
+
+function copyShoppingList() {
+  const selected = [...selectedRecipes].map(id => typeof MEALS !== 'undefined' ? MEALS.find(m => m.id === id) : null).filter(Boolean);
+  let text = 'NOURISH MIND & HEART — SHOPPING LIST\n';
+  text += `Recipes: ${selected.map(m => m.name).join(', ')}\n\n`;
+
+  const ingredientMap = {};
+  selected.forEach(meal => {
+    (meal.ingredients || []).forEach(raw => {
+      const name = parseIngredient(raw).toLowerCase();
+      if (!ingredientMap[name]) ingredientMap[name] = raw;
+    });
+  });
+
+  text += Object.values(ingredientMap).map(i => `☐ ${i}`).join('\n');
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => { btn.textContent = '📋 Copy List'; }, 2000);
+  });
+}
+
+// ── INIT ─────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  restoreSession();
+});
+</script>
+
 </body>
 </html>
